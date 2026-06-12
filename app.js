@@ -1,315 +1,348 @@
-// ===== נתוני יצורים =====
 const CREATURES = [
-  // פרחים
-  { id: 'rose',        emoji: '🌹', name: 'ורד אדום',        type: 'flower', rarity: 'common',    xp: 10,  desc: 'פרח יפה הנמצא בגנים רבים' },
-  { id: 'sunflower',   emoji: '🌻', name: 'חמנייה',          type: 'flower', rarity: 'common',    xp: 10,  desc: 'תמיד פונה לשמש' },
-  { id: 'tulip',       emoji: '🌷', name: 'צבעוני',          type: 'flower', rarity: 'common',    xp: 12,  desc: 'פרח האביב הקלאסי' },
-  { id: 'cherry',      emoji: '🌸', name: 'פריחת דובדבן',   type: 'flower', rarity: 'rare',      xp: 30,  desc: 'פורח רק שבועיים בשנה' },
-  { id: 'lotus',       emoji: '🪷', name: 'לוטוס קסום',     type: 'flower', rarity: 'rare',      xp: 35,  desc: 'גדל במים, סמל לטוהר' },
-  { id: 'orchid',      emoji: '🌺', name: 'סחלב זהב',       type: 'flower', rarity: 'legendary', xp: 80,  desc: 'הפרח הנדיר ביותר ביערות' },
-
-  // עצים
-  { id: 'pine',        emoji: '🌲', name: 'אורן ירוק',       type: 'tree',   rarity: 'common',    xp: 10,  desc: 'עמיד לכל עונה' },
-  { id: 'deciduous',   emoji: '🌳', name: 'אלון ותיק',       type: 'tree',   rarity: 'common',    xp: 12,  desc: 'יכול לחיות מאות שנים' },
-  { id: 'palm',        emoji: '🌴', name: 'דקל מלכותי',     type: 'tree',   rarity: 'rare',      xp: 28,  desc: 'שייך לאזורים חמים' },
-  { id: 'bonsai',      emoji: '🎋', name: 'במבוק ענק',       type: 'tree',   rarity: 'rare',      xp: 32,  desc: 'גדל במהירות מדהימה' },
-  { id: 'sakura',      emoji: '🌸', name: 'עץ סאקורה',      type: 'tree',   rarity: 'legendary', xp: 75,  desc: 'רק 3 עצים כאלה קיימים בארץ' },
-  { id: 'dragon_tree', emoji: '🌵', name: 'קקטוס ענק',       type: 'tree',   rarity: 'rare',      xp: 25,  desc: 'שורד ללא מים שבועות' },
-
-  // בעלי חיים
-  { id: 'butterfly',   emoji: '🦋', name: 'פרפר צבעוני',    type: 'animal', rarity: 'common',    xp: 15,  desc: 'מתחיל חייו כזחל' },
-  { id: 'hedgehog',    emoji: '🦔', name: 'קיפוד',           type: 'animal', rarity: 'common',    xp: 18,  desc: 'יוצא בעיקר בלילה' },
-  { id: 'fox',         emoji: '🦊', name: 'שועל חכם',       type: 'animal', rarity: 'rare',      xp: 40,  desc: 'חיה חכמה ומסתתרת' },
-  { id: 'owl',         emoji: '🦉', name: 'ינשוף חכם',      type: 'animal', rarity: 'rare',      xp: 45,  desc: 'ציד לילי מומחה' },
-  { id: 'deer',        emoji: '🦌', name: 'צבי אדיר',       type: 'animal', rarity: 'rare',      xp: 50,  desc: 'חי ביערות הצפוניים' },
-  { id: 'phoenix',     emoji: '🦅', name: 'נשר הזהב',       type: 'animal', rarity: 'legendary', xp: 100, desc: 'המלך הנדיר של השמיים' },
-  { id: 'dragon_fly',  emoji: '🐉', name: 'שרקרק קשתי',     type: 'animal', rarity: 'legendary', xp: 120, desc: 'יצור אגדי מהאגמים הנסתרים' },
+  {id:'rose',emoji:'🌹',name:'ורד אדום',type:'flower',rarity:'common',xp:10,desc:'פרח יפה'},
+  {id:'sunflower',emoji:'🌻',name:'חמנייה',type:'flower',rarity:'common',xp:10,desc:'פונה לשמש'},
+  {id:'tulip',emoji:'🌷',name:'צבעוני',type:'flower',rarity:'common',xp:12,desc:'פרח האביב'},
+  {id:'cherry',emoji:'🌸',name:'פריחת דובדבן',type:'flower',rarity:'rare',xp:35,desc:'פורח שבועיים בשנה'},
+  {id:'lotus',emoji:'🪷',name:'לוטוס קסום',type:'flower',rarity:'rare',xp:40,desc:'גדל במים'},
+  {id:'orchid',emoji:'🌺',name:'סחלב זהב',type:'flower',rarity:'legendary',xp:90,desc:'הפרח הנדיר ביותר'},
+  {id:'pine',emoji:'🌲',name:'אורן ירוק',type:'tree',rarity:'common',xp:10,desc:'עמיד לכל עונה'},
+  {id:'oak',emoji:'🌳',name:'אלון ותיק',type:'tree',rarity:'common',xp:12,desc:'חי מאות שנים'},
+  {id:'palm',emoji:'🌴',name:'דקל מלכותי',type:'tree',rarity:'rare',xp:30,desc:'שייך לאזורים חמים'},
+  {id:'cactus',emoji:'🌵',name:'קקטוס ענק',type:'tree',rarity:'rare',xp:28,desc:'שורד ללא מים'},
+  {id:'sakura',emoji:'🎋',name:'במבוק קדוש',type:'tree',rarity:'legendary',xp:80,desc:'סמל לחוזק'},
+  {id:'butterfly',emoji:'🦋',name:'פרפר צבעוני',type:'animal',rarity:'common',xp:15,desc:'מתחיל כזחל'},
+  {id:'hedgehog',emoji:'🦔',name:'קיפוד',type:'animal',rarity:'common',xp:18,desc:'יוצא בלילה'},
+  {id:'fox',emoji:'🦊',name:'שועל חכם',type:'animal',rarity:'rare',xp:45,desc:'חיה חכמה'},
+  {id:'owl',emoji:'🦉',name:'ינשוף חכם',type:'animal',rarity:'rare',xp:50,desc:'ציד לילי'},
+  {id:'deer',emoji:'🦌',name:'צבי אדיר',type:'animal',rarity:'rare',xp:55,desc:'חי ביערות'},
+  {id:'eagle',emoji:'🦅',name:'נשר הזהב',type:'animal',rarity:'legendary',xp:110,desc:'מלך השמיים'},
+  {id:'dragon',emoji:'🐉',name:'דרקון הטבע',type:'animal',rarity:'legendary',xp:130,desc:'יצור אגדי'},
 ];
 
-// ===== STATE =====
-let gameState = {
-  collection: {},
-  xp: 0,
-  level: 1,
-  coins: 0,
-  totalCaught: 0,
-  rareCaught: 0,
-};
+let state = {collection:{},xp:0,level:1,coins:0,total:0,rare:0};
+let map=null, playerMarker=null, spawnedMarkers=[], stopMarkers=[], currentCreature=null;
+let throwBall=null, throwing=false, startY=0;
+let distanceWalked=0, lastPos=null, ballShakes=0;
 
-let map = null;
-let playerMarker = null;
-let mapCreatures = [];
-let currentARCreature = null;
-let cameraStream = null;
-let currentFilter = 'all';
+function save(){localStorage.setItem('gm2',JSON.stringify(state))}
+function load(){const s=localStorage.getItem('gm2');if(s)state={...state,...JSON.parse(s)}}
 
-// ===== LOAD / SAVE =====
-function saveState() {
-  localStorage.setItem('goodmood_state', JSON.stringify(gameState));
-}
-
-function loadState() {
-  const saved = localStorage.getItem('goodmood_state');
-  if (saved) {
-    gameState = { ...gameState, ...JSON.parse(saved) };
-  }
-}
-
-// ===== START =====
-function startApp() {
-  loadState();
-  document.getElementById('splash-screen').classList.add('hidden');
-  document.getElementById('main-app').classList.remove('hidden');
+function startApp(){
+  load();
+  document.getElementById('splash').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
   initMap();
-  updateUI();
+  updateHUD();
   requestLocation();
 }
 
-// ===== MAP =====
-function initMap() {
-  map = L.map('map-container', {
-    zoomControl: false,
-    attributionControl: false,
-  }).setView([31.7683, 35.2137], 15);
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-  }).addTo(map);
-
-  // סמן שחקן
-  const playerIcon = L.divIcon({
-    html: `<div style="position:relative;width:60px;height:60px">
-      <div style="position:absolute;inset:0;border-radius:50%;background:rgba(100,200,150,0.15);border:2px solid rgba(100,200,150,0.4);animation:radar 2s ease-out infinite"></div>
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:white;border-radius:50%;border:3px solid #4CAF50;box-shadow:0 0 0 4px rgba(76,175,80,0.3),0 2px 8px rgba(0,0,0,0.3)"></div>
-    </div>`,
-    className: '', iconSize: [60, 60], iconAnchor: [30, 30]
-  });
-
-  playerMarker = L.marker([31.7683, 35.2137], { icon: playerIcon }).addTo(map);
-  spawnCreaturesNearby(31.7683, 35.2137);
+function initMap(){
+  map=L.map('map',{zoomControl:false,attributionControl:false}).setView([31.7683,35.2137],16);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+  setPlayerMarker(31.7683,35.2137);
+  spawnAround(31.7683,35.2137);
 }
 
-function requestLocation() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.watchPosition(
-    pos => {
-      const { latitude: lat, longitude: lng } = pos.coords;
-      playerMarker.setLatLng([lat, lng]);
-      map.setView([lat, lng], 16);
-      spawnCreaturesNearby(lat, lng);
-    },
-    () => {},
-    { enableHighAccuracy: true, maximumAge: 5000 }
-  );
+function setPlayerMarker(lat,lng){
+  const icon=L.divIcon({html:`
+    <div style="position:relative;width:64px;height:64px">
+      <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(76,175,80,.5);animation:radar 2s ease-out infinite"></div>
+      <div style="position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(76,175,80,.3);animation:radar 2s ease-out infinite;animation-delay:.5s"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;background:#fff;border-radius:50%;border:4px solid #4caf50;box-shadow:0 0 0 4px rgba(76,175,80,.3),0 2px 12px rgba(0,0,0,.4)"></div>
+    </div>`,className:'',iconSize:[64,64],iconAnchor:[32,32]});
+  if(playerMarker)map.removeLayer(playerMarker);
+  playerMarker=L.marker([lat,lng],{icon,zIndexOffset:1000}).addTo(map);
 }
 
-function spawnCreaturesNearby(lat, lng) {
-  // נקה יצורים ישנים
-  mapCreatures.forEach(m => map.removeLayer(m.marker));
-  mapCreatures = [];
-
-  const count = 5 + Math.floor(Math.random() * 4);
-  for (let i = 0; i < count; i++) {
-    const creature = randomCreature();
-    const offsetLat = (Math.random() - 0.5) * 0.008;
-    const offsetLng = (Math.random() - 0.5) * 0.008;
-    const cLat = lat + offsetLat;
-    const cLng = lng + offsetLng;
-
-    const rarityClass = creature.rarity === 'legendary' ? 'legendary' : creature.rarity === 'rare' ? 'rare' : '';
-    const icon = L.divIcon({
-      html: `<div class="creature-marker ${rarityClass}">${creature.emoji}</div>`,
-      className: '', iconSize: [44, 44], iconAnchor: [22, 22]
-    });
-
-    const marker = L.marker([cLat, cLng], { icon })
-      .addTo(map)
-      .on('click', () => openCameraForCreature(creature));
-
-    mapCreatures.push({ marker, creature });
-  }
-}
-
-function randomCreature() {
-  const roll = Math.random();
-  let pool;
-  if (roll < 0.6) pool = CREATURES.filter(c => c.rarity === 'common');
-  else if (roll < 0.88) pool = CREATURES.filter(c => c.rarity === 'rare');
-  else pool = CREATURES.filter(c => c.rarity === 'legendary');
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-
-// ===== CAMERA / AR =====
-function openCameraForCreature(creature) {
-  currentARCreature = creature;
-  showView('camera');
-
-  document.getElementById('ar-creature-display').textContent = creature.emoji;
-  document.getElementById('catch-btn').classList.remove('hidden');
-  document.getElementById('camera-hint').textContent =
-    `${creature.emoji} ${creature.name} — לחץ לאיסוף!`;
-
-  startCamera();
-}
-
-async function startCamera() {
-  try {
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(t => t.stop());
+function requestLocation(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.watchPosition(pos=>{
+    const{latitude:la,longitude:ln}=pos.coords;
+    if(lastPos){
+      const d=calcDist(lastPos.lat,lastPos.lng,la,ln);
+      distanceWalked+=d;
+      updateDistDisplay();
     }
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' }, audio: false
-    });
-    document.getElementById('camera-feed').srcObject = cameraStream;
-  } catch {
-    // מצלמה לא זמינה - ממשיך בלי
-    document.getElementById('camera-feed').style.background = 'linear-gradient(160deg,#1b4332,#0d2818)';
+    lastPos={lat:la,lng:ln};
+    setPlayerMarker(la,ln);
+    map.setView([la,ln],16);
+    spawnAround(la,ln);
+  },{},{enableHighAccuracy:true,maximumAge:5000});
+}
+
+function calcDist(la1,ln1,la2,ln2){
+  const R=6371000;
+  const dLa=(la2-la1)*Math.PI/180;
+  const dLn=(ln2-ln1)*Math.PI/180;
+  const a=Math.sin(dLa/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLn/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function updateDistDisplay(){
+  const el=document.getElementById('dist-val');
+  if(el)el.textContent=distanceWalked<1000?Math.round(distanceWalked)+'מ':(distanceWalked/1000).toFixed(1)+'"מק';
+}
+
+function spawnStops(lat,lng){
+  stopMarkers.forEach(m=>map.removeLayer(m));
+  stopMarkers=[];
+  const stops=[
+    {lat:lat+.003,lng:lng+.002,used:false},
+    {lat:lat-.002,lng:lng+.004,used:false},
+    {lat:lat+.001,lng:lng-.003,used:false},
+  ];
+  stops.forEach(s=>{
+    const icon=L.divIcon({html:`<div class="stop-marker">💠</div>`,className:'',iconSize:[36,36],iconAnchor:[18,18]});
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(map).on('click',()=>collectStop(m,s));
+    stopMarkers.push(m);
+  });
+}
+
+function collectStop(marker,stop){
+  if(stop.used)return;
+  stop.used=true;
+  state.coins+=10;
+  state.xp+=20;
+  save();updateHUD();
+  showToast('💠 PokéStop! +10🪙 +20XP');
+  const el=marker.getElement();
+  if(el){el.style.filter='grayscale(1)';el.style.opacity='.5';}
+  setTimeout(()=>{stop.used=false;if(el){el.style.filter='';el.style.opacity='1';}},300000);
+}
+
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';document.getElementById('app').appendChild(t);}
+  t.textContent=msg;t.className='toast-show';
+  setTimeout(()=>t.className='',2000);
+}
+
+function spawnAround(lat,lng){
+  spawnedMarkers.forEach(m=>map.removeLayer(m));
+  spawnedMarkers=[];
+  spawnStops(lat,lng);
+  const n=5+Math.floor(Math.random()*4);
+  for(let i=0;i<n;i++){
+    const c=randomCreature();
+    const la=lat+(Math.random()-.5)*.007;
+    const ln=lng+(Math.random()-.5)*.007;
+    const cls='cmarker'+(c.rarity==='legendary'?' legendary':c.rarity==='rare'?' rare':'');
+    const icon=L.divIcon({html:`<div class="${cls}">${c.emoji}</div>`,className:'',iconSize:[46,46],iconAnchor:[23,23]});
+    const m=L.marker([la,ln],{icon}).addTo(map).on('click',()=>startEncounter(c));
+    spawnedMarkers.push(m);
   }
+  updateNearby();
 }
 
-function stopCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(t => t.stop());
-    cameraStream = null;
+function randomCreature(){
+  const r=Math.random();
+  let pool;
+  if(r<.6)pool=CREATURES.filter(c=>c.rarity==='common');
+  else if(r<.88)pool=CREATURES.filter(c=>c.rarity==='rare');
+  else pool=CREATURES.filter(c=>c.rarity==='legendary');
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function updateNearby(){
+  const list=document.getElementById('nearby-list');
+  const shown=spawnedMarkers.slice(0,3).map((_,i)=>{
+    const c=CREATURES[Math.floor(Math.random()*CREATURES.length)];
+    return`<div class="nearby-item"><span>${c.emoji}</span><span>${c.name}</span><span class="nearby-dot"></span></div>`;
+  });
+  list.innerHTML=shown.join('');
+}
+
+function startEncounter(c){
+  currentCreature=c;
+  document.getElementById('enc-name').textContent=c.name;
+  document.getElementById('enc-rarity-stars').textContent=
+    c.rarity==='legendary'?'⭐⭐⭐ אגדי!':c.rarity==='rare'?'⭐⭐ נדיר':'⭐ נפוץ';
+  document.getElementById('enc-creature').textContent=c.emoji;
+  document.getElementById('enc-appear-text').textContent=`${c.name} פראי הופיע!`;
+  document.getElementById('enc-hp-fill').style.width='100%';
+  showScreen('encounter');
+  setupThrow();
+  setTimeout(()=>{document.getElementById('enc-appear-text').textContent=''},2500);
+}
+
+function setupThrow(){
+  throwBall=document.getElementById('throw-ball');
+  throwing=false;
+  throwBall.style.transform='';
+  throwBall.style.opacity='1';
+  throwBall.className='';
+
+  let startY=0,startX=0;
+
+  throwBall.addEventListener('touchstart',e=>{
+    startY=e.touches[0].clientY;
+    startX=e.touches[0].clientX;
+  },{passive:true});
+
+  throwBall.addEventListener('touchend',e=>{
+    if(throwing)return;
+    const dy=startY-e.changedTouches[0].clientY;
+    if(dy>60){doThrow();}
+  },{passive:true});
+
+  throwBall.addEventListener('mousedown',e=>{startY=e.clientY;startX=e.clientX});
+  throwBall.addEventListener('mouseup',e=>{
+    if(throwing)return;
+    const dy=startY-e.clientY;
+    if(dy>40)doThrow();
+  });
+}
+
+function doThrow(){
+  if(throwing)return;
+  throwing=true;
+  throwBall.classList.add('throwing');
+  document.getElementById('enc-hp-fill').style.width='20%';
+  document.getElementById('enc-creature').style.animation='none';
+
+  setTimeout(()=>{
+    throwBall.classList.remove('throwing');
+    throwBall.textContent='⚫';
+    throwBall.style.transform='translateY(-280px) scale(.5)';
+    document.getElementById('enc-creature').style.opacity='0';
+    shakeAnimation(0,Math.random()<catchRate());
+  },500);
+}
+
+function shakeAnimation(count,willCatch){
+  if(count>=3){
+    if(willCatch){
+      throwBall.style.transform='translateY(-280px) scale(.5)';
+      showStarBurst();
+      setTimeout(()=>caughtCreature(),600);
+    } else {
+      document.getElementById('enc-creature').style.opacity='1';
+      document.getElementById('enc-creature').style.animation='enc-float 2s ease-in-out infinite';
+      throwBall.textContent='🟢';
+      throwBall.style.transform='';
+      throwing=false;
+      if(Math.random()<.3)setTimeout(()=>showFlee(currentCreature),500);
+    }
+    return;
   }
+  setTimeout(()=>{
+    const angle=count%2===0?-15:15;
+    throwBall.style.transform=`translateY(-280px) scale(.5) rotate(${angle}deg)`;
+    setTimeout(()=>shakeAnimation(count+1,willCatch),400);
+  },400);
 }
 
-function catchCreature() {
-  if (!currentARCreature) return;
-  const c = currentARCreature;
-
-  // עדכן אוסף
-  if (!gameState.collection[c.id]) {
-    gameState.collection[c.id] = { ...c, count: 0 };
-  }
-  gameState.collection[c.id].count++;
-  gameState.xp += c.xp;
-  gameState.totalCaught++;
-  gameState.coins += c.rarity === 'legendary' ? 50 : c.rarity === 'rare' ? 20 : 5;
-  if (c.rarity !== 'common') gameState.rareCaught++;
-
-  // רמה
-  const newLevel = Math.floor(gameState.xp / 100) + 1;
-  gameState.level = newLevel;
-
-  saveState();
-  updateUI();
-  showCatchPopup(c);
-  stopCamera();
+function showStarBurst(){
+  const stars=document.createElement('div');
+  stars.id='starburst';
+  stars.innerHTML='✨⭐✨⭐✨';
+  stars.style.cssText='position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:20;animation:starburst .8s ease-out forwards;pointer-events:none';
+  document.getElementById('encounter-screen').appendChild(stars);
+  setTimeout(()=>stars.remove(),800);
 }
 
-function showCatchPopup(c) {
-  document.getElementById('popup-creature-emoji').textContent = c.emoji;
-  document.getElementById('popup-creature-name').textContent = c.name;
-  document.getElementById('popup-creature-rarity').textContent =
-    c.rarity === 'legendary' ? '⭐⭐⭐ אגדי!' : c.rarity === 'rare' ? '⭐⭐ נדיר' : '⭐ נפוץ';
-  document.getElementById('popup-creature-desc').textContent = c.desc;
-  document.getElementById('popup-xp-val').textContent = c.xp;
-  document.getElementById('catch-popup').classList.remove('hidden');
+function catchRate(){
+  if(currentCreature.rarity==='legendary')return.3;
+  if(currentCreature.rarity==='rare')return.6;
+  return.85;
 }
 
-function closePopup() {
-  document.getElementById('catch-popup').classList.add('hidden');
-  showView('map');
-  currentARCreature = null;
+function caughtCreature(){
+  const c=currentCreature;
+  if(!state.collection[c.id])state.collection[c.id]={...c,count:0};
+  state.collection[c.id].count++;
+  state.xp+=c.xp;
+  state.total++;
+  state.coins+=c.rarity==='legendary'?50:c.rarity==='rare'?20:5;
+  if(c.rarity!=='common')state.rare++;
+  state.level=Math.floor(state.xp/100)+1;
+  save();
+  updateHUD();
+  showSuccess(c);
 }
 
-// ===== COLLECTION =====
-function filterCollection(type) {
-  currentFilter = type;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+function runAway(){showScreen('map')}
+
+function showSuccess(c){
+  showScreen('map');
+  document.getElementById('suc-emoji').textContent=c.emoji;
+  document.getElementById('suc-name').textContent=c.name;
+  document.getElementById('suc-rarity').textContent=c.rarity==='legendary'?'⭐⭐⭐ אגדי!':c.rarity==='rare'?'⭐⭐ נדיר':'⭐ נפוץ';
+  document.getElementById('suc-xp-val').textContent=c.xp;
+  document.getElementById('success-popup').classList.remove('hidden');
+}
+
+function showFlee(c){
+  showScreen('map');
+  document.getElementById('flee-emoji').textContent=c.emoji;
+  document.getElementById('flee-popup').classList.remove('hidden');
+}
+
+function closeSuccess(){document.getElementById('success-popup').classList.add('hidden')}
+function closeFlee(){document.getElementById('flee-popup').classList.add('hidden')}
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>{s.className='screen hidden'});
+  const el=document.getElementById(name+'-screen');
+  el.className='screen active';
+  if(name==='collection')renderCollection();
+  if(name==='profile')renderProfile();
+  if(name==='map')setTimeout(()=>map&&map.invalidateSize(),100);
+}
+
+function updateHUD(){
+  const xpInLevel=state.xp-(state.level-1)*100;
+  document.getElementById('hud-xp-fill').style.width=Math.min(100,xpInLevel)+'%';
+  document.getElementById('coin-val').textContent=state.coins;
+}
+
+let collFilter='all';
+function filterColl(type,btn){
+  collFilter=type;
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
   renderCollection();
 }
 
-function renderCollection() {
-  const grid = document.getElementById('collection-grid');
-  const empty = document.getElementById('collection-empty');
-  const items = Object.values(gameState.collection)
-    .filter(c => currentFilter === 'all' || c.type === currentFilter);
-
-  if (items.length === 0) {
-    grid.innerHTML = '';
-    empty.classList.remove('hidden');
-    return;
-  }
-
+function renderCollection(){
+  const grid=document.getElementById('coll-grid');
+  const empty=document.getElementById('coll-empty');
+  const items=Object.values(state.collection).filter(c=>collFilter==='all'||c.type===collFilter);
+  if(!items.length){grid.innerHTML='';empty.classList.remove('hidden');return}
   empty.classList.add('hidden');
-  grid.innerHTML = items.map(c => `
-    <div class="collection-card ${c.rarity}">
-      <span class="card-emoji">${c.emoji}</span>
-      <div class="card-name">${c.name}</div>
-      <div class="card-count">×${c.count}</div>
-      <span class="card-rarity rarity-${c.rarity}">
-        ${c.rarity === 'legendary' ? 'אגדי' : c.rarity === 'rare' ? 'נדיר' : 'נפוץ'}
-      </span>
-    </div>
-  `).join('');
+  grid.innerHTML=items.map(c=>`
+    <div class="ccard ${c.rarity}">
+      <span class="cc-emoji">${c.emoji}</span>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-count">×${c.count}</div>
+      <span class="cc-badge badge-${c.rarity}">${c.rarity==='legendary'?'אגדי':c.rarity==='rare'?'נדיר':'נפוץ'}</span>
+    </div>`).join('');
 }
 
-// ===== PROFILE =====
-function renderProfile() {
-  const xpForLevel = gameState.level * 100;
-  const xpInLevel = gameState.xp - (gameState.level - 1) * 100;
-  const pct = Math.min(100, (xpInLevel / 100) * 100);
+function renderProfile(){
+  const xp=state.xp-(state.level-1)*100;
+  document.getElementById('prof-lvl-num').textContent=state.level;
+  document.getElementById('prof-xp-fill').style.width=Math.min(100,xp)+'%';
+  document.getElementById('prof-xp-text').textContent=`${xp} / 100 XP`;
+  document.getElementById('ps-total').textContent=state.total;
+  document.getElementById('ps-rare').textContent=state.rare;
+  document.getElementById('ps-types').textContent=Object.keys(state.collection).length;
 
-  document.getElementById('stat-total').textContent = gameState.totalCaught;
-  document.getElementById('stat-rare').textContent = gameState.rareCaught;
-  document.getElementById('stat-level').textContent = gameState.level;
-  document.getElementById('player-level').textContent = `רמה ${gameState.level}`;
-  document.getElementById('xp-bar').style.width = pct + '%';
-  document.getElementById('xp-text').textContent = `${xpInLevel} / 100 XP`;
-
-  const achievements = [
-    { emoji: '🌱', text: 'איסוף ראשון', unlocked: gameState.totalCaught >= 1 },
-    { emoji: '🌿', text: 'אסף 10 יצורים', unlocked: gameState.totalCaught >= 10 },
-    { emoji: '🌳', text: 'אסף 50 יצורים', unlocked: gameState.totalCaught >= 50 },
-    { emoji: '⭐', text: 'יצור נדיר ראשון', unlocked: gameState.rareCaught >= 1 },
-    { emoji: '🏆', text: '5 נדירים', unlocked: gameState.rareCaught >= 5 },
-    { emoji: '👑', text: 'יצור אגדי!', unlocked: Object.values(gameState.collection).some(c => c.rarity === 'legendary') },
+  const achs=[
+    {em:'🌱',txt:'איסוף ראשון',ok:state.total>=1},
+    {em:'🌿',txt:'אסף 10 יצורים',ok:state.total>=10},
+    {em:'🌳',txt:'אסף 50 יצורים',ok:state.total>=50},
+    {em:'⭐',txt:'יצור נדיר ראשון',ok:state.rare>=1},
+    {em:'🏆',txt:'5 נדירים',ok:state.rare>=5},
+    {em:'👑',txt:'יצור אגדי!',ok:Object.values(state.collection).some(c=>c.rarity==='legendary')},
   ];
-
-  document.getElementById('achievements-list').innerHTML = achievements.map(a => `
-    <div class="achievement-item ${a.unlocked ? '' : 'locked'}">
-      <span class="achievement-emoji">${a.emoji}</span>
-      <span class="achievement-text">${a.text}</span>
-    </div>
-  `).join('');
+  document.getElementById('ach-list').innerHTML=achs.map(a=>`
+    <div class="ach-item${a.ok?'':' locked'}">
+      <span class="ach-em">${a.em}</span>
+      <span class="ach-txt">${a.txt}</span>
+    </div>`).join('');
 }
 
-// ===== UI =====
-function updateUI() {
-  document.getElementById('coin-count').textContent = `🪙 ${gameState.coins}`;
-  document.getElementById('player-level').textContent = `רמה ${gameState.level}`;
-}
-
-function showView(name) {
-  // עצור מצלמה אם עוברים מהמצלמה
-  if (name !== 'camera') stopCamera();
-
-  document.querySelectorAll('.view').forEach(v => {
-    v.classList.remove('active');
-    v.classList.add('hidden');
-  });
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-  const viewEl = document.getElementById(name + '-view');
-  viewEl.classList.remove('hidden');
-  viewEl.classList.add('active');
-
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const navMap = { map: 0, camera: 1, collection: 2, profile: 3 };
-  if (navMap[name] !== undefined) navBtns[navMap[name]].classList.add('active');
-
-  if (name === 'collection') renderCollection();
-  if (name === 'profile') renderProfile();
-  if (name === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
-}
-
-// spawn יצורים חדשים כל 30 שניות
-setInterval(() => {
-  if (playerMarker) {
-    const ll = playerMarker.getLatLng();
-    spawnCreaturesNearby(ll.lat, ll.lng);
-  }
-}, 30000);
+setInterval(()=>{
+  if(playerMarker){const ll=playerMarker.getLatLng();spawnAround(ll.lat,ll.lng)}
+},35000);
