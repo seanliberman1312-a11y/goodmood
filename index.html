@@ -3,140 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#2d6a4f" />
+  <meta name="theme-color" content="#1a2a1a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>GOODMOOD 🌿</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-<!-- מסך פתיחה -->
-<div id="splash-screen">
-  <div class="splash-logo">🌿</div>
-  <h1>GOODMOOD</h1>
-  <p>צא לטבע — אסוף פרחים, עצים ובעלי חיים נדירים</p>
-  <button id="start-btn" onclick="startApp()">התחל הרפתקה 🚀</button>
+<div id="splash">
+  <div id="splash-bg"></div>
+  <div id="splash-content">
+    <div id="splash-logo">🌿</div>
+    <h1>GOODMOOD</h1>
+    <p>צא לטבע — גלה ואסוף יצורים נדירים</p>
+    <button id="splash-btn" onclick="startApp()">התחל 🚀</button>
+  </div>
 </div>
 
-<!-- מסך ראשי -->
-<div id="main-app" class="hidden">
+<div id="app" class="hidden">
 
-  <!-- תפריט עליון -->
-  <div id="top-bar">
-    <div id="player-info">
-      <span id="player-name">🌿 חוקר טבע</span>
-      <span id="player-level">רמה 1</span>
+  <div id="map-screen" class="screen active">
+    <div id="map"></div>
+
+    <div id="hud-top">
+      <div id="hud-avatar">🌿</div>
+      <div id="hud-info">
+        <div id="hud-name">חוקר טבע</div>
+        <div id="hud-xp-bar"><div id="hud-xp-fill"></div></div>
+      </div>
+      <div id="hud-coins">🪙 <span id="coin-val">0</span></div>
     </div>
-    <div id="score-display">
-      <span id="coin-count">🪙 0</span>
+
+    <div id="dist-badge">🚶 <span id="dist-val">0מ</span></div>
+
+    <div id="nearby-panel">
+      <div id="nearby-title">קרוב אליך</div>
+      <div id="nearby-list"></div>
+    </div>
+
+    <div id="bottom-bar">
+      <button class="side-btn" onclick="showScreen('collection')">🎒</button>
+      <button id="pokeball-btn" onclick="showScreen('map')">
+        <div id="pokeball">
+          <div id="pokeball-top"></div>
+          <div id="pokeball-mid"></div>
+          <div id="pokeball-bot"></div>
+          <div id="pokeball-center"></div>
+        </div>
+      </button>
+      <button class="side-btn" onclick="showScreen('profile')">👤</button>
     </div>
   </div>
 
-  <!-- תצוגות -->
-  <div id="views">
-
-    <!-- מפה -->
-    <div id="map-view" class="view active">
-      <div id="map-container"></div>
-      <div id="radar-pulse"></div>
-      <div id="nearby-creatures"></div>
-    </div>
-
-    <!-- מצלמה / AR -->
-    <div id="camera-view" class="view hidden">
-      <video id="camera-feed" autoplay playsinline></video>
-      <div id="ar-overlay">
-        <div id="ar-crosshair">🎯</div>
-        <div id="ar-creature-display"></div>
-        <button id="catch-btn" class="hidden" onclick="catchCreature()">אסוף! 🤚</button>
+  <div id="encounter-screen" class="screen hidden">
+    <div id="encounter-bg"></div>
+    <div id="encounter-header">
+      <div id="enc-name-box">
+        <div id="enc-name"></div>
+        <div id="enc-rarity-stars"></div>
+        <div id="enc-hp-bar"><div id="enc-hp-fill"></div></div>
       </div>
-      <div id="camera-hint">כוון את המצלמה לסביבה שלך</div>
+      <button id="enc-run" onclick="runAway()">ברח</button>
     </div>
+    <div id="enc-creature-wrap">
+      <div id="enc-shadow"></div>
+      <div id="enc-creature"></div>
+      <div id="enc-appear-text"></div>
+    </div>
+    <div id="enc-grass"></div>
+    <div id="throw-area">
+      <div id="throw-hint">החלק למעלה לזרוק 🟢</div>
+      <div id="throw-ball" draggable="false">🟢</div>
+      <div id="throw-rings">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+      </div>
+    </div>
+  </div>
 
-    <!-- אוסף -->
-    <div id="collection-view" class="view hidden">
+  <div id="collection-screen" class="screen hidden">
+    <div id="coll-header">
+      <button onclick="showScreen('map')">← חזור</button>
       <h2>האוסף שלי 🎒</h2>
-      <div id="collection-tabs">
-        <button class="tab-btn active" onclick="filterCollection('all')">הכל</button>
-        <button class="tab-btn" onclick="filterCollection('flower')">🌸 פרחים</button>
-        <button class="tab-btn" onclick="filterCollection('tree')">🌳 עצים</button>
-        <button class="tab-btn" onclick="filterCollection('animal')">🦋 בעלי חיים</button>
-      </div>
-      <div id="collection-grid"></div>
-      <div id="collection-empty" class="hidden">
-        <p>האוסף ריק עדיין...<br/>צא החוצה ואסוף! 🚶</p>
-      </div>
     </div>
-
-    <!-- פרופיל -->
-    <div id="profile-view" class="view hidden">
-      <div id="profile-card">
-        <div id="profile-avatar">🌿</div>
-        <h2 id="profile-name">חוקר טבע</h2>
-        <div id="profile-stats">
-          <div class="stat-box">
-            <span class="stat-num" id="stat-total">0</span>
-            <span class="stat-label">נאספו</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-num" id="stat-rare">0</span>
-            <span class="stat-label">נדירים</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-num" id="stat-level">1</span>
-            <span class="stat-label">רמה</span>
-          </div>
-        </div>
-        <div id="xp-bar-container">
-          <div id="xp-bar"></div>
-          <span id="xp-text">0 / 100 XP</span>
-        </div>
-        <div id="achievements">
-          <h3>הישגים 🏆</h3>
-          <div id="achievements-list"></div>
-        </div>
-      </div>
+    <div id="coll-tabs">
+      <button class="ctab active" onclick="filterColl('all',this)">הכל</button>
+      <button class="ctab" onclick="filterColl('flower',this)">🌸 פרחים</button>
+      <button class="ctab" onclick="filterColl('tree',this)">🌳 עצים</button>
+      <button class="ctab" onclick="filterColl('animal',this)">🦋 חיות</button>
     </div>
-
+    <div id="coll-grid"></div>
+    <div id="coll-empty" class="hidden">צא החוצה ואסוף! 🌿</div>
   </div>
 
-  <!-- תפריט תחתון -->
-  <nav id="bottom-nav">
-    <button class="nav-btn active" onclick="showView('map')">
-      <span class="nav-icon">🗺️</span>
-      <span>מפה</span>
-    </button>
-    <button class="nav-btn camera-nav-btn" onclick="showView('camera')">
-      <span class="nav-icon big">📷</span>
-    </button>
-    <button class="nav-btn" onclick="showView('collection')">
-      <span class="nav-icon">🎒</span>
-      <span>אוסף</span>
-    </button>
-    <button class="nav-btn" onclick="showView('profile')">
-      <span class="nav-icon">👤</span>
-      <span>פרופיל</span>
-    </button>
-  </nav>
+  <div id="profile-screen" class="screen hidden">
+    <div id="prof-header">
+      <button onclick="showScreen('map')">← חזור</button>
+      <h2>פרופיל 👤</h2>
+    </div>
+    <div id="prof-card">
+      <div id="prof-avatar">🌿</div>
+      <div id="prof-name">חוקר טבע</div>
+      <div id="prof-level">רמה <span id="prof-lvl-num">1</span></div>
+      <div id="prof-xp-wrap">
+        <div id="prof-xp-bar"><div id="prof-xp-fill"></div></div>
+        <div id="prof-xp-text">0 / 100 XP</div>
+      </div>
+      <div id="prof-stats">
+        <div class="pstat"><div class="pstat-n" id="ps-total">0</div><div class="pstat-l">נאספו</div></div>
+        <div class="pstat"><div class="pstat-n" id="ps-rare">0</div><div class="pstat-l">נדירים</div></div>
+        <div class="pstat"><div class="pstat-n" id="ps-types">0</div><div class="pstat-l">סוגים</div></div>
+      </div>
+    </div>
+    <div id="achievements-wrap">
+      <h3>הישגים 🏆</h3>
+      <div id="ach-list"></div>
+    </div>
+  </div>
+
+  <div id="success-popup" class="hidden">
+    <div id="success-card">
+      <div id="suc-caught-text">נתפס!</div>
+      <div id="suc-emoji"></div>
+      <div id="suc-name"></div>
+      <div id="suc-rarity"></div>
+      <div id="suc-xp">+<span id="suc-xp-val"></span> XP</div>
+      <button onclick="closeSuccess()">מגניב! ✨</button>
+    </div>
+  </div>
+
+  <div id="flee-popup" class="hidden">
+    <div id="flee-card">
+      <div id="flee-emoji"></div>
+      <div id="flee-text">ברח!</div>
+      <button onclick="closeFlee()">המשך</button>
+    </div>
+  </div>
 
 </div>
 
-<!-- פופאפ איסוף -->
-<div id="catch-popup" class="popup hidden">
-  <div class="popup-content">
-    <div id="popup-creature-emoji"></div>
-    <h2 id="popup-creature-name"></h2>
-    <p id="popup-creature-rarity"></p>
-    <p id="popup-creature-desc"></p>
-    <div id="popup-xp">+<span id="popup-xp-val"></span> XP</div>
-    <button onclick="closePopup()">מגניב! ✨</button>
-  </div>
-</div>
-
-<!-- Leaflet מפה -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="app.js"></script>
 </body>
