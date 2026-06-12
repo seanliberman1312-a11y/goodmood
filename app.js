@@ -22,7 +22,7 @@ const CREATURES = [
 let state = {collection:{},xp:0,level:1,coins:0,total:0,rare:0};
 let map=null, playerMarker=null, spawnedMarkers=[], stopMarkers=[], currentCreature=null;
 let throwBall=null, throwing=false, startY=0;
-let distanceWalked=0, lastPos=null, ballShakes=0;
+let distanceWalked=0, lastPos=null;
 
 function save(){localStorage.setItem('gm2',JSON.stringify(state))}
 function load(){const s=localStorage.getItem('gm2');if(s)state={...state,...JSON.parse(s)}}
@@ -44,12 +44,7 @@ function initMap(){
 }
 
 function setPlayerMarker(lat,lng){
-  const icon=L.divIcon({html:`
-    <div style="position:relative;width:64px;height:64px">
-      <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(76,175,80,.5);animation:radar 2s ease-out infinite"></div>
-      <div style="position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(76,175,80,.3);animation:radar 2s ease-out infinite;animation-delay:.5s"></div>
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;background:#fff;border-radius:50%;border:4px solid #4caf50;box-shadow:0 0 0 4px rgba(76,175,80,.3),0 2px 12px rgba(0,0,0,.4)"></div>
-    </div>`,className:'',iconSize:[64,64],iconAnchor:[32,32]});
+  const icon=L.divIcon({html:`<div style="position:relative;width:64px;height:64px"><div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(76,175,80,.5);animation:radar 2s ease-out infinite"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;background:#fff;border-radius:50%;border:4px solid #4caf50;box-shadow:0 0 0 4px rgba(76,175,80,.3)"></div></div>`,className:'',iconSize:[64,64],iconAnchor:[32,32]});
   if(playerMarker)map.removeLayer(playerMarker);
   playerMarker=L.marker([lat,lng],{icon,zIndexOffset:1000}).addTo(map);
 }
@@ -67,7 +62,7 @@ function requestLocation(){
     setPlayerMarker(la,ln);
     map.setView([la,ln],16);
     spawnAround(la,ln);
-  },{},{enableHighAccuracy:true,maximumAge:5000});
+  },null,{enableHighAccuracy:true,maximumAge:5000});
 }
 
 function calcDist(la1,ln1,la2,ln2){
@@ -80,18 +75,14 @@ function calcDist(la1,ln1,la2,ln2){
 
 function updateDistDisplay(){
   const el=document.getElementById('dist-val');
-  if(el)el.textContent=distanceWalked<1000?Math.round(distanceWalked)+'מ':(distanceWalked/1000).toFixed(1)+'"מק';
+  if(el)el.textContent=distanceWalked<1000?Math.round(distanceWalked)+'מ':(distanceWalked/1000).toFixed(1)+'ק"מ';
 }
 
 function spawnStops(lat,lng){
   stopMarkers.forEach(m=>map.removeLayer(m));
   stopMarkers=[];
-  const stops=[
-    {lat:lat+.003,lng:lng+.002,used:false},
-    {lat:lat-.002,lng:lng+.004,used:false},
-    {lat:lat+.001,lng:lng-.003,used:false},
-  ];
-  stops.forEach(s=>{
+  [{lat:lat+.003,lng:lng+.002},{lat:lat-.002,lng:lng+.004},{lat:lat+.001,lng:lng-.003}].forEach(s=>{
+    s.used=false;
     const icon=L.divIcon({html:`<div class="stop-marker">💠</div>`,className:'',iconSize:[36,36],iconAnchor:[18,18]});
     const m=L.marker([s.lat,s.lng],{icon}).addTo(map).on('click',()=>collectStop(m,s));
     stopMarkers.push(m);
@@ -101,8 +92,7 @@ function spawnStops(lat,lng){
 function collectStop(marker,stop){
   if(stop.used)return;
   stop.used=true;
-  state.coins+=10;
-  state.xp+=20;
+  state.coins+=10;state.xp+=20;
   save();updateHUD();
   showToast('💠 PokéStop! +10🪙 +20XP');
   const el=marker.getElement();
@@ -145,7 +135,8 @@ function randomCreature(){
 
 function updateNearby(){
   const list=document.getElementById('nearby-list');
-  const shown=spawnedMarkers.slice(0,3).map((_,i)=>{
+  if(!list)return;
+  const shown=spawnedMarkers.slice(0,3).map(()=>{
     const c=CREATURES[Math.floor(Math.random()*CREATURES.length)];
     return`<div class="nearby-item"><span>${c.emoji}</span><span>${c.name}</span><span class="nearby-dot"></span></div>`;
   });
@@ -155,8 +146,7 @@ function updateNearby(){
 function startEncounter(c){
   currentCreature=c;
   document.getElementById('enc-name').textContent=c.name;
-  document.getElementById('enc-rarity-stars').textContent=
-    c.rarity==='legendary'?'⭐⭐⭐ אגדי!':c.rarity==='rare'?'⭐⭐ נדיר':'⭐ נפוץ';
+  document.getElementById('enc-rarity-stars').textContent=c.rarity==='legendary'?'⭐⭐⭐ אגדי!':c.rarity==='rare'?'⭐⭐ נדיר':'⭐ נפוץ';
   document.getElementById('enc-creature').textContent=c.emoji;
   document.getElementById('enc-appear-text').textContent=`${c.name} פראי הופיע!`;
   document.getElementById('enc-hp-fill').style.width='100%';
@@ -171,26 +161,11 @@ function setupThrow(){
   throwBall.style.transform='';
   throwBall.style.opacity='1';
   throwBall.className='';
-
-  let startY=0,startX=0;
-
-  throwBall.addEventListener('touchstart',e=>{
-    startY=e.touches[0].clientY;
-    startX=e.touches[0].clientX;
-  },{passive:true});
-
-  throwBall.addEventListener('touchend',e=>{
-    if(throwing)return;
-    const dy=startY-e.changedTouches[0].clientY;
-    if(dy>60){doThrow();}
-  },{passive:true});
-
-  throwBall.addEventListener('mousedown',e=>{startY=e.clientY;startX=e.clientX});
-  throwBall.addEventListener('mouseup',e=>{
-    if(throwing)return;
-    const dy=startY-e.clientY;
-    if(dy>40)doThrow();
-  });
+  let sy=0;
+  throwBall.addEventListener('touchstart',e=>{sy=e.touches[0].clientY},{passive:true,once:true});
+  throwBall.addEventListener('touchend',e=>{if(!throwing&&sy-e.changedTouches[0].clientY>60)doThrow()},{passive:true,once:true});
+  throwBall.addEventListener('mousedown',e=>{sy=e.clientY},{once:true});
+  throwBall.addEventListener('mouseup',e=>{if(!throwing&&sy-e.clientY>40)doThrow()},{once:true});
 }
 
 function doThrow(){
@@ -199,7 +174,6 @@ function doThrow(){
   throwBall.classList.add('throwing');
   document.getElementById('enc-hp-fill').style.width='20%';
   document.getElementById('enc-creature').style.animation='none';
-
   setTimeout(()=>{
     throwBall.classList.remove('throwing');
     throwBall.textContent='⚫';
@@ -211,54 +185,42 @@ function doThrow(){
 
 function shakeAnimation(count,willCatch){
   if(count>=3){
-    if(willCatch){
-      throwBall.style.transform='translateY(-280px) scale(.5)';
-      showStarBurst();
-      setTimeout(()=>caughtCreature(),600);
-    } else {
+    if(willCatch){showStarBurst();setTimeout(()=>caughtCreature(),600);}
+    else{
       document.getElementById('enc-creature').style.opacity='1';
       document.getElementById('enc-creature').style.animation='enc-float 2s ease-in-out infinite';
-      throwBall.textContent='🟢';
-      throwBall.style.transform='';
-      throwing=false;
+      throwBall.textContent='🟢';throwBall.style.transform='';throwing=false;
       if(Math.random()<.3)setTimeout(()=>showFlee(currentCreature),500);
     }
     return;
   }
   setTimeout(()=>{
-    const angle=count%2===0?-15:15;
-    throwBall.style.transform=`translateY(-280px) scale(.5) rotate(${angle}deg)`;
+    throwBall.style.transform=`translateY(-280px) scale(.5) rotate(${count%2===0?-15:15}deg)`;
     setTimeout(()=>shakeAnimation(count+1,willCatch),400);
   },400);
 }
 
 function showStarBurst(){
-  const stars=document.createElement('div');
-  stars.id='starburst';
-  stars.innerHTML='✨⭐✨⭐✨';
-  stars.style.cssText='position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:20;animation:starburst .8s ease-out forwards;pointer-events:none';
-  document.getElementById('encounter-screen').appendChild(stars);
-  setTimeout(()=>stars.remove(),800);
+  const s=document.createElement('div');
+  s.innerHTML='✨⭐✨⭐✨';
+  s.style.cssText='position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:20;animation:starburst .8s ease-out forwards;pointer-events:none';
+  document.getElementById('encounter-screen').appendChild(s);
+  setTimeout(()=>s.remove(),800);
 }
 
 function catchRate(){
-  if(currentCreature.rarity==='legendary')return.3;
-  if(currentCreature.rarity==='rare')return.6;
-  return.85;
+  return currentCreature.rarity==='legendary'?.3:currentCreature.rarity==='rare'?.6:.85;
 }
 
 function caughtCreature(){
   const c=currentCreature;
   if(!state.collection[c.id])state.collection[c.id]={...c,count:0};
   state.collection[c.id].count++;
-  state.xp+=c.xp;
-  state.total++;
+  state.xp+=c.xp;state.total++;
   state.coins+=c.rarity==='legendary'?50:c.rarity==='rare'?20:5;
   if(c.rarity!=='common')state.rare++;
   state.level=Math.floor(state.xp/100)+1;
-  save();
-  updateHUD();
-  showSuccess(c);
+  save();updateHUD();showSuccess(c);
 }
 
 function runAway(){showScreen('map')}
@@ -283,16 +245,14 @@ function closeFlee(){document.getElementById('flee-popup').classList.add('hidden
 
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>{s.className='screen hidden'});
-  const el=document.getElementById(name+'-screen');
-  el.className='screen active';
+  document.getElementById(name+'-screen').className='screen active';
   if(name==='collection')renderCollection();
   if(name==='profile')renderProfile();
   if(name==='map')setTimeout(()=>map&&map.invalidateSize(),100);
 }
 
 function updateHUD(){
-  const xpInLevel=state.xp-(state.level-1)*100;
-  document.getElementById('hud-xp-fill').style.width=Math.min(100,xpInLevel)+'%';
+  document.getElementById('hud-xp-fill').style.width=Math.min(100,state.xp-(state.level-1)*100)+'%';
   document.getElementById('coin-val').textContent=state.coins;
 }
 
@@ -310,13 +270,7 @@ function renderCollection(){
   const items=Object.values(state.collection).filter(c=>collFilter==='all'||c.type===collFilter);
   if(!items.length){grid.innerHTML='';empty.classList.remove('hidden');return}
   empty.classList.add('hidden');
-  grid.innerHTML=items.map(c=>`
-    <div class="ccard ${c.rarity}">
-      <span class="cc-emoji">${c.emoji}</span>
-      <div class="cc-name">${c.name}</div>
-      <div class="cc-count">×${c.count}</div>
-      <span class="cc-badge badge-${c.rarity}">${c.rarity==='legendary'?'אגדי':c.rarity==='rare'?'נדיר':'נפוץ'}</span>
-    </div>`).join('');
+  grid.innerHTML=items.map(c=>`<div class="ccard ${c.rarity}"><span class="cc-emoji">${c.emoji}</span><div class="cc-name">${c.name}</div><div class="cc-count">×${c.count}</div><span class="cc-badge badge-${c.rarity}">${c.rarity==='legendary'?'אגדי':c.rarity==='rare'?'נדיר':'נפוץ'}</span></div>`).join('');
 }
 
 function renderProfile(){
@@ -327,22 +281,13 @@ function renderProfile(){
   document.getElementById('ps-total').textContent=state.total;
   document.getElementById('ps-rare').textContent=state.rare;
   document.getElementById('ps-types').textContent=Object.keys(state.collection).length;
-
-  const achs=[
+  document.getElementById('ach-list').innerHTML=[
     {em:'🌱',txt:'איסוף ראשון',ok:state.total>=1},
     {em:'🌿',txt:'אסף 10 יצורים',ok:state.total>=10},
-    {em:'🌳',txt:'אסף 50 יצורים',ok:state.total>=50},
     {em:'⭐',txt:'יצור נדיר ראשון',ok:state.rare>=1},
     {em:'🏆',txt:'5 נדירים',ok:state.rare>=5},
     {em:'👑',txt:'יצור אגדי!',ok:Object.values(state.collection).some(c=>c.rarity==='legendary')},
-  ];
-  document.getElementById('ach-list').innerHTML=achs.map(a=>`
-    <div class="ach-item${a.ok?'':' locked'}">
-      <span class="ach-em">${a.em}</span>
-      <span class="ach-txt">${a.txt}</span>
-    </div>`).join('');
+  ].map(a=>`<div class="ach-item${a.ok?'':' locked'}"><span class="ach-em">${a.em}</span><span class="ach-txt">${a.txt}</span></div>`).join('');
 }
 
-setInterval(()=>{
-  if(playerMarker){const ll=playerMarker.getLatLng();spawnAround(ll.lat,ll.lng)}
-},35000);
+setInterval(()=>{if(playerMarker){const ll=playerMarker.getLatLng();spawnAround(ll.lat,ll.lng)}},35000);
