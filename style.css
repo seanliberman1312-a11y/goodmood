@@ -15,7 +15,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',sans-serif;backgrou
 .screen{position:absolute;inset:0}
 .screen.active{display:flex;flex-direction:column}
 .screen.hidden{display:none}
-#map-screen{position:relative}
+#map-screen{position:absolute;inset:0}
 #map{position:absolute;inset:0;z-index:0}
 .leaflet-container{background:#6db090}
 .leaflet-tile-pane{filter:saturate(2.2) hue-rotate(8deg) brightness(0.92) contrast(1.12)}
